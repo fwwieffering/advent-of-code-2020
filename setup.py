@@ -6,5 +6,4 @@ setuptools.setup(
     author="freddy wieffering",
     description="advent of code exercises 2020",
     packages=setuptools.find_packages(),
-    include_package_data=True,
 )
