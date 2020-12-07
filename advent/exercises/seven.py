@@ -48,7 +48,7 @@ class Node(object):
         recursively pass through all _contains and sum up the edges
         '''
 
-        def _do_count(edge_sum: int, children: List[Tuple[Node, int]]):
+        def _do_count(children: List[Tuple[Node, int]]):
             # tuples are a count of the number of bags and the bag
 
             # base case: no more children
@@ -61,11 +61,11 @@ class Node(object):
             for child in children:
                 child_factor = child[1]
                 child_node = child[0]
-                node_count += child_factor * _do_count(edge_sum, list(child_node._contains.values()))
+                node_count += child_factor * _do_count(list(child_node._contains.values()))
 
             return node_count
 
-        return _do_count(0, list(self._contains.values())) - 1 # -1 because original node should not count
+        return _do_count(list(self._contains.values())) - 1 # -1 because original node should not count
 
 
     def count_containers(self):
