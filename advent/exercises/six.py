@@ -18,15 +18,6 @@ def load_groups() -> List[List[str]]:
     return [x.split('\n') for x in content.split('\n\n')]
 
 
-# def count_questions_group(group: List[str]):
-#     chars = {}
-#     for member in group:
-#         for q in member:
-#             chars[q] = True
-
-#     return len(chars.keys())
-
-
 def count_questions_or(group: List[str]):
     count = 0b0
     for member in group:
