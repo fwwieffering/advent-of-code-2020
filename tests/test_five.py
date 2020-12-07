@@ -18,9 +18,9 @@ def test_seat_row():
         },
         {
             'ticket': 'BBFBBBBLLL',
-            'row': 102,
-            'col': 4,
-            'seat_id': 820
+            'row': 111,
+            'col': 0,
+            'seat_id': 888
         },
     ]
     for c in cases:
