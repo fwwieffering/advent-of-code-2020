@@ -24,6 +24,8 @@ class SeatLayout(object):
         for a given seat determines the next state based on the current state
         '''
         cur_state = self.get_seat(xidx, yidx)
+        if cur_state == ".":
+            return "."
         neighbors = self.get_neighbors_part1(xidx, yidx)
         occupied_count = neighbors.count('#')
         if occupied_count >= 4 and cur_state == '#':
@@ -34,6 +36,8 @@ class SeatLayout(object):
 
     def check_seat_part2(self, xidx, yidx) -> str:
         cur = self.get_seat(xidx, yidx)
+        if cur == ".":
+            return cur
         neighbors = self.get_neighbors_part2(xidx, yidx)
         occupied = neighbors.count('#')
         if occupied >= 5 and cur == '#':
