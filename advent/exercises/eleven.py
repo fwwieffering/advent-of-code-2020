@@ -15,6 +15,7 @@ class SeatLayout(object):
 
     def __init__(self, layout: List[List[str]]):
         self._seats = layout
+        self._neighbors_cache = {}
 
     def get_seat(self, xidx: int, yidx: int) -> str:
         return self._seats[yidx][xidx]
@@ -26,8 +27,15 @@ class SeatLayout(object):
         cur_state = self.get_seat(xidx, yidx)
         if cur_state == ".":
             return "."
-        neighbors = self.get_neighbors_part1(xidx, yidx)
-        occupied_count = neighbors.count('#')
+
+        # check neigbhors cache
+        neighbors = self._neighbors_cache.get((xidx, yidx))
+        if not neighbors:
+            neighbors = self.get_neighbors_part1(xidx, yidx)
+            self._neighbors_cache[(xidx, yidx)] = neighbors
+
+        neighbor_vals = [self.get_seat(n[0], n[1]) for n in neighbors]
+        occupied_count = neighbor_vals.count('#')
         if occupied_count >= 4 and cur_state == '#':
             return 'L'
         if occupied_count == 0 and cur_state == 'L':
@@ -38,15 +46,22 @@ class SeatLayout(object):
         cur = self.get_seat(xidx, yidx)
         if cur == ".":
             return cur
-        neighbors = self.get_neighbors_part2(xidx, yidx)
-        occupied = neighbors.count('#')
+
+        # check neigbhors cache
+        neighbors = self._neighbors_cache.get((xidx, yidx))
+        if not neighbors:
+            neighbors = self.get_neighbors_part2(xidx, yidx)
+            self._neighbors_cache[(xidx, yidx)] = neighbors
+
+        neighbor_vals = [self.get_seat(n[0], n[1]) for n in neighbors]
+        occupied = neighbor_vals.count('#')
         if occupied >= 5 and cur == '#':
             return 'L'
         if occupied == 0 and cur == 'L':
             return '#'
         return cur
 
-    def get_neighbors_part1(self, xidx: int, yidx: int) -> List[str]:
+    def get_neighbors_part1(self, xidx: int, yidx: int) -> List[Tuple[int, int]]:
         '''
         gets all adjacent seat values. adjacent is the 8 surrounding (non-floor) seats in a grid
 
@@ -66,10 +81,13 @@ class SeatLayout(object):
             val = self.get_seat(n[0], n[1])
             # add if not empty
             if val != ".":
-                neighbors.append(val)
+                neighbors.append(n)
         return neighbors
 
-    def get_neighbors_part2(self, xidx: int, yidx: int) -> List[str]:
+    def get_neighbors_part2(self, xidx: int, yidx: int) -> List[Tuple[int, int]]:
+        '''
+        finds the visible seats for a given index
+        '''
         vectors = [
             (-1, -1),
             (0, -1),
@@ -94,7 +112,7 @@ class SeatLayout(object):
                 # print(f"vector {vec} - at ({cur_x}, {cur_y})")
                 s = self.get_seat(cur_x, cur_y)
                 if s != '.':
-                    return s
+                    return (cur_x, cur_y)
                 cur_x += vec[0]
                 cur_y += vec[1]
             return None
@@ -129,6 +147,7 @@ class SeatLayout(object):
         return self._seats == other_layout
 
     def get_final_layout(self, part: int):
+        self._neighbors_cache = {}
         while True:
             next_layout = self.process_rule(part)
             if self.equal(next_layout):
